@@ -10,36 +10,47 @@ var answers = [true, true, true, true, true];
 
 $(document).ready(function () {
     class Question {
+        qIndex;
+        que;
+        ttl;
+        answ;
+
+        card;
+        cHead;
+        cBody;
+        cTitle;
+
+
         constructor(){
             // var qCol = color(125,0,125);
-            var qIndex = Math.floor(Math.random() *(possibleQs.length - 1));
-            var que = possibleQs[qIndex];
-            var ttl = titles[qIndex];
-            var answ = answers[qIndex];
+            this.qIndex = Math.floor(Math.random() *(possibleQs.length - 1));
+            this.que = possibleQs[this.qIndex];
+            this.ttl = titles[this.qIndex];
+            this.answ = answers[this.qIndex];
     
     
-            var card = $("<div>");
-            var cHead = $("<div>");
-            var cBody = $("<div>");
-            var cTitle = $("<div>");
+            this.card = $("<div>");
+            this.cHead = $("<div>");
+            this.cBody = $("<div>");
+            this.cTitle = $("<div>");
     
-            card.addClass("card");
-            cHead.addClass("card-header");
-            cBody.addClass("card-body");
-            cTitle.addClass("card-title");
+            this.card.addClass("card");
+            this.cHead.addClass("card-header");
+            this.cBody.addClass("card-body");
+            this.cTitle.addClass("card-title");
             
-            cTitle.text(ttl);
-            cBody.append(cTitle);
-            cBody.append(que);
-            cHead.text("Question");
-            card.append(cHead);
-            card.append(cBody);
+            this.cTitle.text(this.ttl);
+            this.cBody.append(this.cTitle);
+            this.cBody.append(this.que);
+            this.cHead.text("Question");
+            this.card.append(this.cHead);
+            this.card.append(this.cBody);
         }
     
     }
     
     var newCard = new Question();
-    console.log(newCard.cHead);
-    // $(".question").append(newCard);
+    console.log(newCard);
+     $("#question").append(newCard.card);
 
 })
