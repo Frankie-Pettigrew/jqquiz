@@ -2,14 +2,24 @@ var globalTime = 0;
 var questionTime = 0;
 var questionTimeLim = 0;
 
-var titles = ["Dreams", "domed and divided by arches", "slide off", "pitifully thin", "a proper human"];
-var possibleQs = ["<p>One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin</p>", "<p>He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>", "<p>The bedding was hardly able to cover it and seemed ready to slide off any moment.</p>", "<p>His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.</p>", "<p>'What's happened to me?' he thought. It wasn't a dream. His room, a proper human</p>"];
-var answers = [0, 0, 1, 1, 0];
+var titles = ["What's the name of this meme format?", "Who is this?", "Here he come", "Someone who is way too into anime is called?", "What's his name?", "What song did this guy sing?", "What are these called?", "What is it called when an unrelated link leads to this?"]
+
+var possibleQs = ["assets/img/advice_animal.jpeg", "assets/img/chocolate_rain.jpeg", "assets/img/dat_boi.jpeg", "assets/img/death_note.jpeg", "assets/img/Joseph_Ducreux_Original_Self-Portrait.jpg", "assets/img/psy.jpeg", "assets/img/rage_comic.png", "assets/img/rickRolld.jpeg"];
+var answer0 = ["Big Boys", "Titus Greensleeve", "Thanos", "Idiot", "Dingledan Fingersmith", "Chocolate Rain", "Angry Strip", "Rick Rolling"];
+var answer1 = ["Advice Animal", "Edward Scissorhands", "That guy!!!", "Mr. Slappy", "Charles LaCroix", "Baby", "Mad Pictures", "Dick Bowling"];
+var answer2 = ["Talking Heads", "Tay Zonday", "Dat boi!!!", "Mecha", "Joseph Ducreux", "Harlem Shake", "Annoyed Images", "Trick Trolling"];
+var answer3 = ["Bigger Boys", "Naruto", "Sad Frog", "Weeaboo", "Joseph Ghiradelli", "Gangnam Style", "Rage Comics", "Richard tumbling"];
+
+var answers = [1, 2, 2, 3, 2, 3, 3, 0];
 let alreadyAnswered = [];
 
 let currentCard;
 
 let score = 0;
+
+let timerRunning = false;
+let qTimer = 0;
+const qTimeLimit = 3000;
 
 class Question {
     qIndex;
@@ -23,21 +33,20 @@ class Question {
     cTitle;
     cButton0;
     cButton1;
+    cButton2;
+    cButton3;
 
 
     constructor() {
         // var qCol = color(125,0,125);
-        this.qIndex = Math.floor(Math.random() * (possibleQs.length - 1));
-        if (alreadyAnswered.length >= 1) {
-            for (let thing in alreadyAnswered) {
-                if (thing === this.qIndex) {
-                    this.qIndex = possibleQs[possibleQs.lastIndexOf()];
-                }
-            }
-        }
+        this.qIndex = checkForDupe(Math.floor(Math.random() * (possibleQs.length)));
+        
 
 
-        this.que = possibleQs[this.qIndex];
+        this.que = $('<img>');
+        this.que.addClass("card-img-top");
+        this.que.attr("id", "cardImg");
+        this.que.attr("src", possibleQs[this.qIndex]);
         this.ttl = titles[this.qIndex];
         this.answ = answers[this.qIndex];
 
@@ -48,6 +57,8 @@ class Question {
         this.cTitle = $("<h3>");
         this.cButton0 = $("<button>");
         this.cButton1 = $("<button>");
+        this.cButton2 = $("<button>");
+        this.cButton3 = $("<button>");
 
         this.card.addClass("card");
         this.card.addClass("bg-dark");
@@ -59,17 +70,28 @@ class Question {
         this.cButton0.addClass("btn-primary");
         this.cButton1.addClass("btn");
         this.cButton1.addClass("btn-primary");
+        this.cButton2.addClass("btn");
+        this.cButton2.addClass("btn-primary");
+        this.cButton3.addClass("btn");
+        this.cButton3.addClass("btn-primary");
+
 
         this.cButton0.attr("id", "zero");
         this.cButton1.attr("id", "one");
-        this.cButton0.text("True");
-        this.cButton1.text("False");
+        this.cButton0.text(answer0[this.qIndex]);
+        this.cButton1.text(answer1[this.qIndex]);
+        this.cButton2.attr("id", "two");
+        this.cButton3.attr("id", "three");
+        this.cButton2.text(answer2[this.qIndex]);
+        this.cButton3.text(answer3[this.qIndex]);
 
         this.cTitle.text(this.ttl);
         this.cBody.append(this.cTitle);
         this.cBody.append(this.que);
         this.cBody.append(this.cButton0);
         this.cBody.append(this.cButton1);
+        this.cBody.append(this.cButton2);
+        this.cBody.append(this.cButton3);
         this.cHead.text("Question");
         this.card.append(this.cHead);
         this.card.append(this.cBody);
@@ -80,15 +102,33 @@ class Question {
 
 $(document).ready(function () {
 
-
-
-
-
     newQ();
 
 
-
 })
+
+function checkForDupe(indy){
+    if(alreadyAnswered.length >= possibleQs.length){
+        alert("Game Over! Score is: " + score);
+    } else {
+    if (alreadyAnswered.length >= 1) {
+        console.log(alreadyAnswered.indexOf(indy));
+        if (alreadyAnswered.indexOf(indy) != -1) {
+            console.log("reset because of dupe: " + indy);
+           let newIndex=  Math.floor(Math.random() * (possibleQs.length));
+           console.log("new index: " + newIndex)
+           checkForDupe(newIndex);
+        } else if(alreadyAnswered.indexOf(indy) == -1) {
+            console.log("not a dupe: " + indy);
+            console.log(alreadyAnswered);
+            return indy;
+        }
+    } else {
+        console.log("first item: " + indy );
+        return indy;
+    }
+}
+}
 
 
 
@@ -100,6 +140,7 @@ function updateScore() {
 function newQ() {
     if (currentCard != undefined) {
         alreadyAnswered.push(currentCard.qIndex);
+        console.log(alreadyAnswered);
     }
     $("#question").empty();
     let nuCard = new Question();
@@ -111,13 +152,14 @@ function newQ() {
 }
 
 function makeGame() {
+    var timey = setTimeout(newQ, 5000);
     $("#zero").on("click", function () {
         console.log("here");
         if (currentCard.answ === 0) {
             updateScore();
+            clearTimeout(timey);
             newQ();
         } else if (currentCard.answ != 0) {
-            alert("Wrong!");
             currentCard.cButton0.removeClass("btn-prmary");
             currentCard.cButton0.addClass('btn-secondary');
         }
@@ -126,11 +168,36 @@ function makeGame() {
     $("#one").on("click", function () {
         if (currentCard.answ === 1) {
             updateScore();
+            clearTimeout(timey);
             newQ();
         } else if (currentCard.answ != 1) {
-            alert("Wrong!");
             currentCard.cButton1.removeClass("btn-prmary");
             currentCard.cButton1.addClass('btn-secondary');
         }
     });
+
+    $("#two").on("click", function () {
+        console.log("here");
+        if (currentCard.answ === 2) {
+            updateScore();
+            clearTimeout(timey);
+            newQ();
+        } else if (currentCard.answ != 2) {
+            currentCard.cButton2.removeClass("btn-prmary");
+            currentCard.cButton2.addClass('btn-secondary');
+        }
+    });
+
+    $("#three").on("click", function () {
+        if (currentCard.answ === 3) {
+            updateScore();
+            clearTimeout(timey);
+            newQ();
+        } else if (currentCard.answ != 3) {
+            currentCard.cButton3.removeClass("btn-prmary");
+            currentCard.cButton3.addClass('btn-secondary');
+        }
+    });
+
+
 }
